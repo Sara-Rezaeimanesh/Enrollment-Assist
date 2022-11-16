@@ -35,7 +35,7 @@ class PresentationScheduleTest {
     }
 
     @Test
-    void other_rep_start_time_before_rep_end_time() throws ExceptionList {
+    void other_rep_start_time_before_rep_Fend_time() throws ExceptionList {
         PresentationSchedule ps1 = new PresentationSchedule("Saturday", "10:00", "13:30");
         PresentationSchedule ps2 = new PresentationSchedule("Saturday", "11:00", "14:00");
         assertTrue(ps1.hasConflict(ps2));
