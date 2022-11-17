@@ -80,6 +80,14 @@ public class CheckEnrollmentRulesTest {
         sections.get(7).setPresentationSchedule(new HashSet<>(List.of(new PresentationSchedule())));
         sections.get(8).setPresentationSchedule(new HashSet<>(List.of(new PresentationSchedule())));
 
+        sections.get(3).setExamTime(new ExamTime("2021-06-21T08:00", "2021-06-21T11:00"));
+        sections.get(4).setExamTime(new ExamTime("2021-06-21T14:00", "2021-06-21T17:00"));
+        PresentationSchedule ps1 = new PresentationSchedule("Saturday", "09:00", "10:30");
+        PresentationSchedule ps2 = new PresentationSchedule("Sunday", "09:00", "10:30");
+
+        sections.get(3).setPresentationSchedule(new HashSet<>(List.of(ps1)));
+        sections.get(4).setPresentationSchedule(new HashSet<>(List.of(ps2)));
+
         for(Integer i : sec_numbers)
             test_sections.add(sections.get(i-1));
         this.expected_error = error;
@@ -95,11 +103,13 @@ public class CheckEnrollmentRulesTest {
             add(new ArrayList<>(){{add(4);add(5);add(6);}});
             add(new ArrayList<>(){{add(7);add(8);}});
             add(new ArrayList<>(){{add(8);add(9);}});
+            add(new ArrayList<>(){{add(4);add(5);}});
         }};
 
         return Arrays.asList(new Object [][]{{CourseException.prerequisite, 2, sec_params.get(0)}, {CourseException.hasAlrPassed, 1, sec_params.get(1)},
                 {CourseException.requestedTwice, 1, sec_params.get(2)}, {CourseException.maxCreditLimit, 1, sec_params.get(3)},
-                {CourseException.examTimeConflict, 1, sec_params.get(4)}, {CourseException.scheduleConflict, 1, sec_params.get(5)}});
+                {CourseException.examTimeConflict, 1, sec_params.get(4)}, {CourseException.scheduleConflict, 1, sec_params.get(5)},
+                {null, 0, sec_params.get(6)}});
     }
 
     @Test
@@ -107,9 +117,6 @@ public class CheckEnrollmentRulesTest {
         for(Section s : test_sections)
             el.addSections(s);
         List<EnrollmentRuleViolation> evs =  el.checkEnrollmentRules();
-        for(EnrollmentRuleViolation e : evs) {
-            System.out.println(e.toString());
-        }
         for(EnrollmentRuleViolation v : evs)
             switch (expected_error) {
                 case prerequisite -> assertTrue(v instanceof PrerequisiteNotTaken);
