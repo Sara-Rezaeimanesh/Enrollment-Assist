@@ -21,7 +21,7 @@ enum CourseException{
 }
 
 @RunWith(Parameterized.class)
-public class EnrollmentListTest {
+public class CheckEnrollmentRulesTest {
     private static EnrollmentList el;
     private static Major m;
     private static Program p;
@@ -34,7 +34,7 @@ public class EnrollmentListTest {
     public CourseException expected_error;
     public int expected_length;
 
-    public EnrollmentListTest(CourseException error, int length, List<Integer> sec_numbers) throws Exception {
+    public CheckEnrollmentRulesTest(CourseException error, int length, List<Integer> sec_numbers) throws Exception {
         m = new Major("10", "CS", "Engineering");
         p = new Program(m, "Masters", 1, 20, "Major");
         courses = new ArrayList<>(){{
