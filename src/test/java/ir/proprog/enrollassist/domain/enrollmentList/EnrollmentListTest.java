@@ -1,55 +1,136 @@
 package ir.proprog.enrollassist.domain.enrollmentList;
-
-import ir.proprog.enrollassist.domain.EnrollmentRules.EnrollmentRuleViolation;
-import ir.proprog.enrollassist.domain.EnrollmentRules.PrerequisiteNotTaken;
+import ir.proprog.enrollassist.domain.EnrollmentRules.*;
 import ir.proprog.enrollassist.domain.course.Course;
 import ir.proprog.enrollassist.domain.major.Major;
 import ir.proprog.enrollassist.domain.program.Program;
+import ir.proprog.enrollassist.domain.section.ExamTime;
+import ir.proprog.enrollassist.domain.section.PresentationSchedule;
 import ir.proprog.enrollassist.domain.section.Section;
 import ir.proprog.enrollassist.domain.student.Student;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class EnrollmentListTest {
+enum CourseException{
+    prerequisite, hasAlrPassed, requestedTwice, examTimeConflict, scheduleConflict, maxCreditLimit
+}
+
+@RunWith(Parameterized.class)
+public class EnrollmentListTest {
     private static EnrollmentList el;
-    @BeforeAll
-    static void setup() throws Exception {
-        Major m = new Major("10", "CS", "Engineering");
-        Program p = new Program(m, "Masters", 0, 20, "Major");
-        Course c = new Course("1234567", "AI", 3, "Undergraduate");
-        Course c2 = new Course("1234568", "DL", 3, "Masters");
-        Course c4 = new Course("1234570", "ML", 3, "Masters");
-        Course c5 = new Course("1234571", "IS", 3, "Masters");
-        Course c6 = new Course("1234572", "LA", 3, "Masters");
-        Course c3 = new Course("1234569", "NLP", 3, "PHD");
-        Set<String> hs = new HashSet<String>();
-        c2.setPrerequisites(new HashSet (Arrays.asList(c, c4)));
-        c4.setPrerequisites(new HashSet (Arrays.asList(c5, c6)));
-        c5.setPrerequisites(new HashSet (Arrays.asList(c6)));
-        c3.setPrerequisites(new HashSet (Arrays.asList(c, c2)));
-        p.addCourse(c, c2, c3, c4, c5, c6);
-        Section se = new Section(c4, "1");
-//        Section se2 = new Section(c2, "2");
-//        Section se3 = new Section(c3, "3");
-        Student s = new Student("810198576", "Masters");
-        s.setGrade("00001", c6, 9);
-        s.setGrade("00002", c, 19);
+    private static Major m;
+    private static Program p;
+    private static Student s;
+    private static List<List<Integer>> sec_params;
+    public static List<Section> test_sections;
+    private static List<Course> courses;
+    private static List<Section> sections;
+
+    public CourseException expected_error;
+    public int expected_length;
+
+    public EnrollmentListTest(CourseException error, int length, List<Integer> sec_numbers) throws Exception {
+        m = new Major("10", "CS", "Engineering");
+        p = new Program(m, "Masters", 1, 20, "Major");
+        courses = new ArrayList<>(){{
+            add(new Course("1234567", "AI", 4, "Masters"));
+            add(new Course("1234568", "DL", 4, "Masters"));
+            add(new Course("1234569", "NLP", 4, "Masters"));
+            add(new Course("1234570", "ML", 4, "Masters"));
+            add(new Course("1234571", "IS", 4, "Masters"));
+            add(new Course("1234572", "LA", 4, "Masters"));
+            add(new Course("1234573", "DB", 4, "Masters"));
+            add(new Course("1234574", "SE", 4, "Masters"));
+            add(new Course("1234575", "AA", 4, "Masters"));
+            add(new Course("1234576", "DA", 4, "Masters"));
+            add(new Course("1234577", "DLD", 4, "Masters"));
+            add(new Course("0000000", "dump", 4, "Masters"));
+        }};
+        courses.get(1).setPrerequisites(new HashSet<>(Arrays.asList(courses.get(0), courses.get(3))));
+        courses.get(3).setPrerequisites(new HashSet<>(Arrays.asList(courses.get(4), courses.get(5))));
+        courses.get(4).setPrerequisites(new HashSet<>(List.of(courses.get(0))));
+        courses.get(2).setPrerequisites(new HashSet<>(Arrays.asList(courses.get(0), courses.get(1))));
+        p.addCourse(courses.get(0), courses.get(1), courses.get(2), courses.get(3), courses.get(4), courses.get(6), courses.get(11));
+
+        sections = new ArrayList<>();
+        test_sections = new ArrayList<>();
+        sections.add(new Section(courses.get(3), "1"));
+        sections.add(new Section(courses.get(0), "2"));
+        sections.add(new Section(courses.get(4), "6"));
+        sections.add(new Section(courses.get(5), "3"));
+        sections.add(new Section(courses.get(6), "4"));
+        sections.add(new Section(courses.get(7), "5"));
+        sections.add(new Section(courses.get(8), "6"));
+        sections.add(new Section(courses.get(9), "7"));
+        sections.add(new Section(courses.get(10), "8"));
+        sections.add(new Section(courses.get(11),"4" ));
+        s = new Student("810198576", "Masters");
+        s.setGrade("00001", courses.get(5), 9);
+        s.setGrade("00002", courses.get(0), 19);
         s.addProgram(p);
         el = new EnrollmentList("list", s);
-        el.addSections(se);
+        el.addSections(sections.get(9));
+        sections.get(6).setExamTime(new ExamTime());
+        sections.get(7).setExamTime(new ExamTime());
+        sections.get(7).setPresentationSchedule(new HashSet<>(List.of(new PresentationSchedule())));
+        sections.get(8).setPresentationSchedule(new HashSet<>(List.of(new PresentationSchedule())));
+
+        for(Integer i : sec_numbers)
+            test_sections.add(sections.get(i-1));
+        this.expected_error = error;
+        this.expected_length = length;
+    }
+
+    @Parameters
+    public static Collection<Object[]> parameters() {
+        sec_params = new ArrayList<>(){{
+            add(new ArrayList<>(){{add(1);}});
+            add(new ArrayList<>(){{add(2);}});
+            add(new ArrayList<>(){{add(4);add(4);}});
+            add(new ArrayList<>(){{add(4);add(5);add(6);}});
+            add(new ArrayList<>(){{add(7);add(8);}});
+            add(new ArrayList<>(){{add(8);add(9);}});
+        }};
+
+        return Arrays.asList(new Object [][]{{CourseException.prerequisite, 2, sec_params.get(0)}, {CourseException.hasAlrPassed, 1, sec_params.get(1)},
+                {CourseException.requestedTwice, 1, sec_params.get(2)}, {CourseException.maxCreditLimit, 1, sec_params.get(3)},
+                {CourseException.examTimeConflict, 1, sec_params.get(4)}, {CourseException.scheduleConflict, 1, sec_params.get(5)}});
     }
 
     @Test
-    public void add_course_fails() {
+    public void enrollmentTest() {
+        for(Section s : test_sections)
+            el.addSections(s);
         List<EnrollmentRuleViolation> evs =  el.checkEnrollmentRules();
-        assertTrue(evs.get(0) instanceof PrerequisiteNotTaken && evs.get(1) instanceof PrerequisiteNotTaken);
+        for(EnrollmentRuleViolation e : evs) {
+            System.out.println(e.toString());
+        }
+        for(EnrollmentRuleViolation v : evs)
+            switch (expected_error) {
+                case prerequisite -> assertTrue(v instanceof PrerequisiteNotTaken);
+                case hasAlrPassed -> assertTrue(v instanceof RequestedCourseAlreadyPassed);
+                case requestedTwice -> assertTrue(v instanceof CourseRequestedTwice);
+                case maxCreditLimit -> assertTrue(v instanceof MaxCreditsLimitExceeded);
+                case examTimeConflict -> assertTrue(v instanceof ExamTimeCollision);
+                case scheduleConflict -> assertTrue(v instanceof ConflictOfClassSchedule);
+            }
+        assertEquals(expected_length, evs.size());
+    }
+
+    @AfterAll
+    static void tearDown(){
+        el = null;
+        m = null;
+        p = null;
+        test_sections = null;
+        s = null;
+        sec_params = null;
+        courses = null;
+        sections = null;
     }
 }
