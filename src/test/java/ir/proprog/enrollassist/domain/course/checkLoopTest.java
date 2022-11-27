@@ -45,15 +45,7 @@ class CheckLoopTest {
         when(courseRepository.findById(2L)).thenReturn(Optional.ofNullable(c2));
 
         programRepository = Mockito.mock(ProgramRepository.class);
-        Set<Course> pre_c = new HashSet<>() {
-            {
-                add(c1);
-            }
-
-            {
-                add(c2);
-            }
-        };
+        Set<Course> pre_c = new HashSet<>() {{add(c1);}{add(c2);}};
         when(c.getPrerequisites()).thenReturn(pre_c);
         when(c.getCourseNumber()).thenReturn(new CourseNumber());
         when(c.getTitle()).thenReturn("DA");
@@ -120,7 +112,6 @@ class CheckLoopTest {
         e_expected.addExceptions(es);
 
         ExceptionList exception = assertThrows(ExceptionList.class, () -> acs.addCourse(cmw));
-//        System.out.println(exception.toString());
         assertTrue(check_exceptions_list_equals(e_expected, exception));
     }
 
@@ -130,7 +121,6 @@ class CheckLoopTest {
 
         boolean isEqual = true;
         for(int i = 0; i < e_expected.getExceptions().size(); i++) {
-//            System.out.println(exception.getExceptions().get(i).getMessage() +" "+ exception.getExceptions().get(i).getMessage());
             isEqual &= (e_expected.getExceptions().get(i).getMessage().equals(exception.getExceptions().get(i).getMessage()));
         }
         return isEqual;
