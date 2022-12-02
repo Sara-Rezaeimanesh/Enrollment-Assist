@@ -33,7 +33,7 @@ public class StudyRecordTest {
     }
 
     @Theory
-    public void pass_test(String gl1, GraduateLevel gl2, Double grade) throws ExceptionList {
+    public void fail_test(String gl1, GraduateLevel gl2, Double grade) throws ExceptionList {
         assumeTrue(grade < min(GraduateLevel.valueOf(gl1).getMinValidGrade() , gl2.getMinValidGrade()));
         Course c = new Course("1234567", "DB", 2, gl1);
         StudyRecord studyRecord = new StudyRecord("00001", c, grade);
@@ -41,7 +41,7 @@ public class StudyRecordTest {
     }
 
     @Theory
-    public void fail_test(String gl1, GraduateLevel gl2, Double grade) throws ExceptionList {
+    public void pass_test(String gl1, GraduateLevel gl2, Double grade) throws ExceptionList {
         assumeTrue(grade > min(GraduateLevel.valueOf(gl1).getMinValidGrade() , gl2.getMinValidGrade()));
         Course c = new Course("1234567", "1", 2, gl1);
         StudyRecord studyRecord = new StudyRecord("00001", c, grade);
