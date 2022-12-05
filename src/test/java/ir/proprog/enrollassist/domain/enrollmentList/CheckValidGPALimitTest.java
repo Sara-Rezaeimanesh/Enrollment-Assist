@@ -59,6 +59,9 @@ public class CheckValidGPALimitTest {
     public static Collection<Object[]> parameters() {
         return Arrays.asList(new Object [][]{
                     {GraduateLevel.Undergraduate, 20, 10, 0, MIN_ERR, 1},
+                    {GraduateLevel.Undergraduate, 0, 14, 1, MIN_ERR, 0},
+                    {GraduateLevel.Undergraduate, 0, 16, 0, MAX_ERR, 1},
+                    {GraduateLevel.Undergraduate, 18, 21, 0, MAX_ERR, 0},
                     {GraduateLevel.Masters, 20, 7, 0, MIN_ERR, 1},
                     {GraduateLevel.Undergraduate, 0, 21, 0, MAX_ERR, 1},
                     {GraduateLevel.Masters, 20, 10, 0, MIN_ERR, 0},
