@@ -121,14 +121,14 @@ public class EnrollmentList {
         if (ownerGraduateLevel == GraduateLevel.Undergraduate) {
             if(GPA.equals(Grade.ZERO) && owner.getTotalTakenCredits() == 0 && credits > 20)
                 violations.add(new MaxCreditsLimitExceeded(20));
-            else if (credits > 14 && GPA.isLessThan(12))
+            else if (credits > 14 && GPA.isLessThan(12)) // 10, 15
                 violations.add(new MaxCreditsLimitExceeded(14));
-            else if (credits > 20 && GPA.isLessThan(17))
+            else if (credits > 20 && GPA.isLessThan(17)) // 16, 21 --- 26, 28
                 violations.add(new MaxCreditsLimitExceeded(20));
         }
 
         if (credits > ownerGraduateLevel.getMaxValidCredits())
-            violations.add(new MaxCreditsLimitExceeded(ownerGraduateLevel.getMaxValidCredits()));
+            violations.add(new MaxCreditsLimitExceeded(ownerGraduateLevel.getMaxValidCredits())); //16, 28
 
         return violations;
     }
