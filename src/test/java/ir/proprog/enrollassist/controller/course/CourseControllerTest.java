@@ -5,37 +5,23 @@ import ir.proprog.enrollassist.Exception.ExceptionList;
 import ir.proprog.enrollassist.domain.course.AddCourseService;
 import ir.proprog.enrollassist.domain.course.Course;
 import ir.proprog.enrollassist.repository.CourseRepository;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.*;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.server.ResponseStatusException;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -54,7 +40,7 @@ class CourseControllerTest {
     @BeforeEach
     public void setup() throws ExceptionList {
         Course c = new Course("9234567", "AD", 4, "Masters");
-        cmw = new CourseMajorView(c, new HashSet<Long>(), new HashSet<Long>());
+        cmw = new CourseMajorView(c, new HashSet<>(), new HashSet<>());
         ArrayList<Course> courses = new ArrayList<>() {{
             add(new Course("1234567", "AI", 4, "Masters"));
             add(new Course("1234568", "DL", 4, "Masters"));
@@ -69,7 +55,7 @@ class CourseControllerTest {
 
     @Test
     public void allWithNoCoursesShouldReturnNoCourseViews() throws Exception {
-        given(this.cr.findAll()).willReturn(new ArrayList<Course>());
+        given(this.cr.findAll()).willReturn(new ArrayList<>());
         mockMvc.perform(get("/courses"))
                 .andExpect(jsonPath("$[*]").isEmpty())
                 .andExpect(status().isOk());
