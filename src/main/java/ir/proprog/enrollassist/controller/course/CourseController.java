@@ -27,7 +27,6 @@ public class CourseController {
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
     public CourseView addNewCourse(@RequestBody CourseMajorView input) {
-
         try {
             Course course = addCourseService.addCourse(input);
             return new CourseView(course);
@@ -43,4 +42,6 @@ public class CourseController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
         return new CourseView(course);
     }
+
+
 }

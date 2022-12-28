@@ -93,7 +93,21 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.10.1</version>
+                <configuration>
+                    <targetClasses>
+                        <param>ir.proprog.enrollassist.domain.enrollmentList.EnrollmentList</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>ir.proprog.enrollassist.domain.enrollmentList.CheckValidGPALimitTest</param>
+                    </targetTests>
+                </configuration>
+            </plugin>
         </plugins>
+
     </build>
 
 </project>
