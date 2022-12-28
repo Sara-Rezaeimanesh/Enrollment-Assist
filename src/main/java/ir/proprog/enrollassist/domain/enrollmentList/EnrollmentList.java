@@ -135,7 +135,6 @@ public class EnrollmentList {
 
 
     List<EnrollmentRuleViolation> checkExamTimeConflicts() {
-        System.out.println("hello");
         List<EnrollmentRuleViolation> violations = new ArrayList<>();
         for (int i = 0; i < sections.size(); i++) {
             Section s1 = sections.get(i);
