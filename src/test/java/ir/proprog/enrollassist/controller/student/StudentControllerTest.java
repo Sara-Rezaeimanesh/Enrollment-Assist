@@ -72,7 +72,7 @@ class StudentControllerTest {
 
         stuCtrl = new StudentController(studentRepository, courseRepository, sectionRepository, enrollmentListRepository, userRepository);
     }
-
+// ll
 //    @Test
 //    public void all_test_expect_student_view(){
 //        when(studentRepository.findAll()).thenReturn(listStudent);
