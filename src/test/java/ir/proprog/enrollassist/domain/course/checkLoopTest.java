@@ -94,28 +94,27 @@ class CheckLoopTest {
         assertTrue(check_exceptions_list_equals(e_expected, exception));
     }
 
-    @Ignore
-    @Test
-    public void loop_exists_returns_exception() {
-        pre_c1 = new HashSet<>(){{add(c);}};
-        when(c1.getPrerequisites()).thenReturn(pre_c1);
-        pre_c2 = new  HashSet<>(){};
-        when(c2.getPrerequisites()).thenReturn(pre_c2);
-
-        Set<Long> prog_dummy = new HashSet<>();
-        pres = new HashSet<>();
-        cmw = new CourseMajorView(c, pres, prog_dummy);
-        acs = new AddCourseService(courseRepository, programRepository);
-
-        ExceptionList e_expected = new ExceptionList();
-        List<Exception> es = new ArrayList<>(){{
-            add(new Exception(String.format("%s has made a loop in prerequisites.", "DM")));
-        }};
-        e_expected.addExceptions(es);
-
-        ExceptionList exception = assertThrows(ExceptionList.class, () -> acs.addCourse(cmw));
-        assertTrue(check_exceptions_list_equals(e_expected, exception));
-    }
+//    @Test
+//    public void loop_exists_returns_exception() {
+//        pre_c1 = new HashSet<>(){{add(c);}};
+//        when(c1.getPrerequisites()).thenReturn(pre_c1);
+//        pre_c2 = new  HashSet<>(){};
+//        when(c2.getPrerequisites()).thenReturn(pre_c2);
+//
+//        Set<Long> prog_dummy = new HashSet<>();
+//        pres = new HashSet<>();
+//        cmw = new CourseMajorView(c, pres, prog_dummy);
+//        acs = new AddCourseService(courseRepository, programRepository);
+//
+//        ExceptionList e_expected = new ExceptionList();
+//        List<Exception> es = new ArrayList<>(){{
+//            add(new Exception(String.format("%s has made a loop in prerequisites.", "DM")));
+//        }};
+//        e_expected.addExceptions(es);
+//
+//        ExceptionList exception = assertThrows(ExceptionList.class, () -> acs.addCourse(cmw));
+//        assertTrue(check_exceptions_list_equals(e_expected, exception));
+//    }
 
     private boolean check_exceptions_list_equals(ExceptionList e_expected, ExceptionList exception) {
         if (e_expected.getExceptions().size() != exception.getExceptions().size())
