@@ -2,7 +2,7 @@ runs:
     using: "composite"
     steps:
         - uses: actions/setup-java@v3
-            with:
+          with:
             java-version: '17'
             distribution: 'temurin'
             cache: maven
