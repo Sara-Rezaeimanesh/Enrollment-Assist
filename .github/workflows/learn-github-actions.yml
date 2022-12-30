@@ -28,5 +28,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml  
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
     - name: Run tests with Maven
       run: mvn -B test --file pom.xml
