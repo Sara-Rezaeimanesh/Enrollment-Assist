@@ -8,11 +8,12 @@ import ir.proprog.enrollassist.domain.section.PresentationSchedule;
 import ir.proprog.enrollassist.domain.section.Section;
 import ir.proprog.enrollassist.domain.student.Student;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import java.util.*;
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,7 +21,6 @@ enum CourseException{
     prerequisite, hasAlrPassed, requestedTwice, examTimeConflict, scheduleConflict, maxCreditLimit
 }
 
-@RunWith(Parameterized.class)
 public class CheckEnrollmentRulesTest {
     private static EnrollmentList el;
     private static Major m;
@@ -34,7 +34,35 @@ public class CheckEnrollmentRulesTest {
     public CourseException expected_error;
     public int expected_length;
 
-    public CheckEnrollmentRulesTest(CourseException error, int length, List<Integer> sec_numbers) throws Exception {
+
+
+
+    private static Stream<Arguments> parameters() {
+        sec_params = new ArrayList<>(){{
+            add(new ArrayList<>(){{add(1);}});
+            add(new ArrayList<>(){{add(2);}});
+            add(new ArrayList<>(){{add(4);add(4);}});
+            add(new ArrayList<>(){{add(4);add(5);add(6);}});
+            add(new ArrayList<>(){{add(7);add(8);}});
+            add(new ArrayList<>(){{add(8);add(9);}});
+            add(new ArrayList<>(){{add(4);add(5);}});
+        }};
+
+        return Stream.of(
+                Arguments.of(CourseException.prerequisite, 2, sec_params.get(0)),
+                Arguments.of(CourseException.hasAlrPassed, 1, sec_params.get(1)),
+                Arguments.of(CourseException.requestedTwice, 1, sec_params.get(2)),
+                Arguments.of(CourseException.maxCreditLimit, 1, sec_params.get(3)),
+                Arguments.of(CourseException.examTimeConflict, 1, sec_params.get(4)),
+                Arguments.of(CourseException.examTimeConflict, 1, sec_params.get(4)),
+                Arguments.of(CourseException.scheduleConflict, 1, sec_params.get(5)),
+                Arguments.of(null, 0, sec_params.get(6))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void enrollmentTest(CourseException error, int length, List<Integer> sec_numbers) throws Exception {
         m = new Major("10", "CS", "Engineering");
         p = new Program(m, "Masters", 1, 20, "Major");
         courses = new ArrayList<>(){{
@@ -92,28 +120,7 @@ public class CheckEnrollmentRulesTest {
             test_sections.add(sections.get(i-1));
         this.expected_error = error;
         this.expected_length = length;
-    }
 
-    @Parameters
-    public static Collection<Object[]> parameters() {
-        sec_params = new ArrayList<>(){{
-            add(new ArrayList<>(){{add(1);}});
-            add(new ArrayList<>(){{add(2);}});
-            add(new ArrayList<>(){{add(4);add(4);}});
-            add(new ArrayList<>(){{add(4);add(5);add(6);}});
-            add(new ArrayList<>(){{add(7);add(8);}});
-            add(new ArrayList<>(){{add(8);add(9);}});
-            add(new ArrayList<>(){{add(4);add(5);}});
-        }};
-
-        return Arrays.asList(new Object [][]{{CourseException.prerequisite, 2, sec_params.get(0)}, {CourseException.hasAlrPassed, 1, sec_params.get(1)},
-                {CourseException.requestedTwice, 1, sec_params.get(2)}, {CourseException.maxCreditLimit, 1, sec_params.get(3)},
-                {CourseException.examTimeConflict, 1, sec_params.get(4)}, {CourseException.scheduleConflict, 1, sec_params.get(5)},
-                {null, 0, sec_params.get(6)}});
-    }
-
-    @Test
-    public void enrollmentTest() {
         for(Section s : test_sections)
             el.addSections(s);
         List<EnrollmentRuleViolation> evs =  el.checkEnrollmentRules();
