@@ -1,8 +1,8 @@
 runs:
-    using: 'composite'
+    using: "composite"
     steps:
         - uses: actions/setup-java@v3
             with:
-               java-version: '17'
-               distribution: 'temurin'
-               cache: maven
+            java-version: '17'
+            distribution: 'temurin'
+            cache: maven
