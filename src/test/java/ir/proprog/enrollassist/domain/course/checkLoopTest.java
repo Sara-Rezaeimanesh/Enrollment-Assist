@@ -5,6 +5,8 @@ import ir.proprog.enrollassist.controller.course.CourseMajorView;
 import ir.proprog.enrollassist.domain.GraduateLevel;
 import ir.proprog.enrollassist.repository.*;
 import org.junit.Ignore;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -94,27 +96,27 @@ class CheckLoopTest {
         assertTrue(check_exceptions_list_equals(e_expected, exception));
     }
 
-//    @Test
-//    public void loop_exists_returns_exception() {
-//        pre_c1 = new HashSet<>(){{add(c);}};
-//        when(c1.getPrerequisites()).thenReturn(pre_c1);
-//        pre_c2 = new  HashSet<>(){};
-//        when(c2.getPrerequisites()).thenReturn(pre_c2);
-//
-//        Set<Long> prog_dummy = new HashSet<>();
-//        pres = new HashSet<>();
-//        cmw = new CourseMajorView(c, pres, prog_dummy);
-//        acs = new AddCourseService(courseRepository, programRepository);
-//
-//        ExceptionList e_expected = new ExceptionList();
-//        List<Exception> es = new ArrayList<>(){{
-//            add(new Exception(String.format("%s has made a loop in prerequisites.", "DM")));
-//        }};
-//        e_expected.addExceptions(es);
-//
-//        ExceptionList exception = assertThrows(ExceptionList.class, () -> acs.addCourse(cmw));
-//        assertTrue(check_exceptions_list_equals(e_expected, exception));
-//    }
+    @Test
+    public void loop_exists_returns_exception() {
+        pre_c1 = new HashSet<>(){{add(c);}};
+        when(c1.getPrerequisites()).thenReturn(pre_c1);
+        pre_c2 = new  HashSet<>(){};
+        when(c2.getPrerequisites()).thenReturn(pre_c2);
+
+        Set<Long> prog_dummy = new HashSet<>();
+        pres = new HashSet<>();
+        cmw = new CourseMajorView(c, pres, prog_dummy);
+        acs = new AddCourseService(courseRepository, programRepository);
+
+        ExceptionList e_expected = new ExceptionList();
+        List<Exception> es = new ArrayList<>(){{
+            add(new Exception(String.format("%s has made a loop in prerequisites.", "DM")));
+        }};
+        e_expected.addExceptions(es);
+
+        ExceptionList exception = assertThrows(ExceptionList.class, () -> acs.addCourse(cmw));
+        assertTrue(check_exceptions_list_equals(e_expected, exception));
+    }
 
     private boolean check_exceptions_list_equals(ExceptionList e_expected, ExceptionList exception) {
         if (e_expected.getExceptions().size() != exception.getExceptions().size())
@@ -125,5 +127,21 @@ class CheckLoopTest {
             isEqual &= (e_expected.getExceptions().get(i).getMessage().equals(exception.getExceptions().get(i).getMessage()));
         }
         return isEqual;
+    }
+
+    @AfterEach
+    private void teardown() {
+        c = null;
+        c1 = null;
+        c2 = null;
+        pre_c1 = null;
+        pre_c2 = null;
+
+        acs = null;
+        cmw = null;
+        pres = null;
+
+        courseRepository = null;
+        programRepository = null;
     }
 }

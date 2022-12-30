@@ -8,6 +8,7 @@ import ir.proprog.enrollassist.domain.student.Student;
 import ir.proprog.enrollassist.domain.student.StudentNumber;
 import ir.proprog.enrollassist.domain.user.User;
 import ir.proprog.enrollassist.repository.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -68,26 +69,24 @@ class StudentControllerTest {
         listViewStudent.add(new StudentView(s1));
         listViewStudent.add(new StudentView(s2));
         listViewStudent.add(new StudentView(s3));
-        listViewStudent.get(0).setUserId("1");
-
         stuCtrl = new StudentController(studentRepository, courseRepository, sectionRepository, enrollmentListRepository, userRepository);
     }
-// ll
-//    @Test
-//    public void all_test_expect_student_view(){
-//        when(studentRepository.findAll()).thenReturn(listStudent);
-//        assertThat(listViewStudent)
-//                .usingRecursiveComparison()
-//                .isEqualTo(stuCtrl.all());
-//    }
 
-//    @Test
-//    public void one_test_expect_student_view(){
-//        when(studentRepository.findByStudentNumber(new StudentNumber("810100000"))).thenReturn(Optional.ofNullable(listStudent.get(0)));
-//        assertThat(listViewStudent.get(0))
-//                .usingRecursiveComparison()
-//                .isEqualTo(stuCtrl.one("810100000"));
-//    }
+    @Test
+    public void all_test_expect_student_view(){
+        when(studentRepository.findAll()).thenReturn(listStudent);
+        assertThat(listViewStudent)
+                .usingRecursiveComparison()
+                .isEqualTo(stuCtrl.all());
+    }
+
+    @Test
+    public void one_test_expect_student_view(){
+        when(studentRepository.findByStudentNumber(new StudentNumber("810100000"))).thenReturn(Optional.ofNullable(listStudent.get(0)));
+        assertThat(listViewStudent.get(0))
+                .usingRecursiveComparison()
+                .isEqualTo(stuCtrl.one("810100000"));
+    }
 
     @Test
     public void one_test_expect_student_not_found(){
@@ -129,6 +128,7 @@ class StudentControllerTest {
 
     @Test
     public void addStudent_test_successful() {
+        listViewStudent.get(0).setUserId("1");
         when(userRepository.findByUserId(listViewStudent.get(0).getUserId())).thenReturn(Optional.of(new User("Narges", "1")));
 
         listViewStudent.get(0).setUserId("1");
@@ -136,6 +136,4 @@ class StudentControllerTest {
                 .usingRecursiveComparison()
                 .isEqualTo(stuCtrl.addStudent(listViewStudent.get(0)));
     }
-
-
 }
