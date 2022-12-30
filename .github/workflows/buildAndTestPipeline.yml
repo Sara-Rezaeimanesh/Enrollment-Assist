@@ -14,10 +14,10 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    
     steps:
+    - uses: actions/checkout@v3
     - uses: ./.github/workflows/setup@v1
     - name: Build with Maven
       run: mvn -B package --file pom.xml  
@@ -26,6 +26,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - uses: ./.github/workflows/setup@v1
     - name: Run tests with Maven
       run: mvn -B test --file pom.xml
