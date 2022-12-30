@@ -3,7 +3,6 @@ runs:
     steps:
         - uses: actions/setup-java@v3
             with:
-            using: "composite"
-                java-version: '17'
-                distribution: 'temurin'
-                cache: maven
+               java-version: '17'
+               distribution: 'temurin'
+               cache: maven
