@@ -48,3 +48,11 @@ Feature: Has the course created
     Given invalid course graduateLevel
     When Course created
     Then should throw Graduate level is not valid error
+
+  Scenario: Course created successfully
+    Given title for course
+    Given courseNumber for course
+    Given credit for course
+    Given graduateLevel for course
+    When Course create
+    Then should create course successfully

@@ -21,8 +21,7 @@ import java.util.Optional;
 import ir.proprog.enrollassist.domain.EnrollmentRules.EnrollmentRuleViolation;
 import ir.proprog.enrollassist.domain.student.Student;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -172,6 +171,16 @@ public class MyStepdefs {
     @Then("should throw Credit is not valid error")
     public void credit_is_not_valid(){
         assertEquals("Credit must be one of the following values: 0, 1, 2, 3, 4.", exception.getExceptions().get(0).getMessage());
+    }
+
+    @When("Course create")
+    public void create_course2() throws ExceptionList {
+        course = new Course(courseNumber, title, credits, graduateLevel);
+    }
+
+    @Then("should create course successfully")
+    public void course_created_successfully(){
+        assertNotNull(course);
     }
 
 }
