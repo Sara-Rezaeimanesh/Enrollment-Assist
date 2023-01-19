@@ -19,7 +19,7 @@ Feature: Has the course created
 
   Scenario: Course courseNumber must contain 7 numbers
     Given title for course
-    Given invalid less than 7 numbers courseNumber less than 7 numbers
+    Given invalid less than 7 numbers courseNumber
     Given credit for course
     Given graduateLevel for course
     When Course created

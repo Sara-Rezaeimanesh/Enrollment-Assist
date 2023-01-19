@@ -77,13 +77,13 @@ public class MyStepdefs {
         violations = CA.canBeTakenBy(s);
     }
 
-    @Then("An PrerequisiteNotTaken error message should pop up")
+    @Then("A PrerequisiteNotTaken error message should pop up")
     public void check_error_is_present(){
         Assertions.assertTrue(violations.get(0) instanceof PrerequisiteNotTaken);
     }
 
-    @Then("course should be added")
-    public void course_should_be_added(){
+    @Then("No PrerequisiteNotTaken error message should pop up")
+    public void errors_array_should_be_empty(){
         assertEquals(0, violations.size());
     }
 
@@ -98,7 +98,7 @@ public class MyStepdefs {
         courseNumber = "";
     }
 
-    @Given("invalid less than 7 numbers courseNumber less than 7 numbers")
+    @Given("invalid less than 7 numbers courseNumber")
     public void set_invalid_less_than_7_numberscourseNumber() throws Exception {
         courseNumber = "111";
     }
