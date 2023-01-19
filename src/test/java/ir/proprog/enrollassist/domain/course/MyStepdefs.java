@@ -51,12 +51,6 @@ public class MyStepdefs {
         CA = new Course("1234567", "CA", 3, "Undergraduate").withPre(math1, phys1);
     }
 
-    @Given("Course exists in student program")
-    public void course_exists_in_student_program() {
-        when(p.hasCourse(any())).thenReturn(true);
-        when(p.getProgramType()).thenReturn(ProgramType.Major);
-    }
-
     @Given("Student hasn't passed prereqs")
     public void student_hasnt_passed_prereqs()  throws  ExceptionList {
         when(s.hasPassed(any())).thenReturn(false);
