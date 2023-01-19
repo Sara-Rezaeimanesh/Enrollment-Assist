@@ -73,6 +73,15 @@ public class DataInitializer {
         changiz.addProgram(eeProgram);
         studentRepository.save(changiz);
 
+        Student narges = new Student("810198000", "Undergraduate")
+                .setGrade("11112", math1, 10)
+                .setGrade("11112", phys1, 12)
+                .setGrade("11112", prog, 16.3)
+                .setGrade("11112", farsi, 18.5);
+
+        narges.addProgram(eeProgram);
+        studentRepository.save(narges);
+
         ExamTime exam0 = new ExamTime("2021-07-10T09:00", "2021-07-10T11:00");
         ExamTime exam1 = new ExamTime("2021-07-11T09:00", "2021-07-11T11:00");
         ExamTime exam2 = new ExamTime("2021-07-12T09:00", "2021-07-12T11:00");
