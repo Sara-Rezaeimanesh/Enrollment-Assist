@@ -6,7 +6,7 @@ Feature: Has the student passed all prerequisites of a course?
     Given Student wants to take a course
     Given Student hasn't passed prereqs
     When Student takes the course
-    Then An error message should pop up
+    Then An PrerequisiteNotTaken error message should pop up
 
   Scenario: Student passed the prereqs
     Given Student Exists

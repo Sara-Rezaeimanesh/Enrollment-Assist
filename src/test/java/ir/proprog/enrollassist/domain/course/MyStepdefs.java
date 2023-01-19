@@ -1,6 +1,7 @@
 package ir.proprog.enrollassist.domain.course;
 
 import ir.proprog.enrollassist.domain.EnrollmentRules.PrerequisiteNotTaken;
+import ir.proprog.enrollassist.domain.GraduateLevel;
 import ir.proprog.enrollassist.domain.course.Course;
 import ir.proprog.enrollassist.domain.program.Program;
 import ir.proprog.enrollassist.domain.program.ProgramType;
@@ -20,6 +21,8 @@ import java.util.Optional;
 import ir.proprog.enrollassist.domain.EnrollmentRules.EnrollmentRuleViolation;
 import ir.proprog.enrollassist.domain.student.Student;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +37,14 @@ public class MyStepdefs {
     Program p;
     @Mock
     Student s;
+
+    private String title;
+    private String graduateLevel;
+    private String courseNumber;
+    private Integer credits;
+    private Course course;
+    private ExceptionList exception;
+
 
     List<EnrollmentRuleViolation> violations;
 
@@ -56,13 +67,111 @@ public class MyStepdefs {
         when(s.hasPassed(any())).thenReturn(false);
     }
 
+    @Given("Student has passed prereqs")
+    public void student_has_passed_prereqs()  throws  ExceptionList {
+        when(s.hasPassed(any())).thenReturn(true);
+    }
+
     @When("Student takes the course")
     public void student_takes_the_course() throws ExceptionList {
         violations = CA.canBeTakenBy(s);
     }
 
-    @Then("An error message should pop up")
+    @Then("An PrerequisiteNotTaken error message should pop up")
     public void check_error_is_present(){
         Assertions.assertTrue(violations.get(0) instanceof PrerequisiteNotTaken);
     }
+
+    @Then("course should be added")
+    public void course_should_be_added(){
+        assertEquals(0, violations.size());
+    }
+
+    //Course constructor
+    @Given("invalid course title")
+    public void set_invalid_title() throws Exception {
+        title = "";
+    }
+
+    @Given("invalid empty courseNumber")
+    public void set_invalid_empty_courseNumber() throws Exception {
+        courseNumber = "";
+    }
+
+    @Given("invalid less than 7 numbers courseNumber less than 7 numbers")
+    public void set_invalid_less_than_7_numberscourseNumber() throws Exception {
+        courseNumber = "111";
+    }
+
+    @Given("invalid string courseNumber")
+    public void set_invalid_string_courseNumber() throws Exception {
+        courseNumber = "as";
+    }
+
+    @Given("invalid course credits")
+    public void set_invalid_credit() throws Exception {
+        credits = 5;
+    }
+
+    @Given("invalid course graduateLevel")
+    public void set_invalid_graduateLevel() throws Exception {
+        graduateLevel = "";
+    }
+
+    @Given("title for course")
+    public void set_valid_title() throws Exception {
+        title = "AP";
+    }
+
+    @Given("courseNumber for course")
+    public void set_valid_courseNumber() throws Exception {
+        courseNumber = "6666666";
+    }
+
+    @Given("credit for course")
+    public void set_valid_credit() throws Exception {
+        credits = 3;
+    }
+
+    @Given("graduateLevel for course")
+    public void set_valid_graduateLevel() throws Exception {
+        graduateLevel = "Undergraduate";
+    }
+
+    @When("Course created")
+    public void create_course() {
+        exception = assertThrows( ExceptionList.class,
+                () -> {course = new Course(courseNumber, title, credits, graduateLevel);});
+    }
+
+    @Then("should throw Course must have a name error")
+    public void course_must_have_a_name(){
+        assertEquals("Course must have a name.", exception.getExceptions().get(0).getMessage());
+    }
+
+    @Then("should throw Course number must be number error")
+    public void course_number_must_be_number(){
+        assertEquals("Course number must be number.", exception.getExceptions().get(0).getMessage());
+    }
+
+    @Then("should throw Course number cannot be empty error")
+    public void course_number_cannot_be_empty(){
+        assertEquals("Course number cannot be empty.", exception.getExceptions().get(0).getMessage());
+    }
+
+    @Then("should throw Course number must contain 7 numbers error")
+    public void course_number_must_contain_7_numbers(){
+        assertEquals("Course number must contain 7 numbers.", exception.getExceptions().get(0).getMessage());
+    }
+
+    @Then("should throw Graduate level is not valid error")
+    public void graduate_level_is_not_valid(){
+        assertEquals("Graduate level is not valid.", exception.getExceptions().get(0).getMessage());
+    }
+
+    @Then("should throw Credit is not valid error")
+    public void credit_is_not_valid(){
+        assertEquals("Credit must be one of the following values: 0, 1, 2, 3, 4.", exception.getExceptions().get(0).getMessage());
+    }
+
 }
